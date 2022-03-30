@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\Contact;
 use App\Models\Customer;
 use App\Models\Customer_Social;
+use App\Models\Faq;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\Slider;
