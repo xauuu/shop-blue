@@ -13,7 +13,7 @@ class CreateSaleTable extends Migration
      */
     public function up()
     {
-        Schema::table('sale', function (Blueprint $table) {
+        Schema::create('sale', function (Blueprint $table) {
             $table->id('sale_id');
             $table->integer('product_id');
             $table->string('sale_name');
