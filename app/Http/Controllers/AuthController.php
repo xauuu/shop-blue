@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,9 +18,12 @@ class AuthController extends Controller
     public function check_login(Request $request)
     {
         $this->validation($request);
-        $email = $request->email;
-        $password = $request->password;
-        if (Auth::attempt(['email' => $email, 'password' => $password])) {
+        $admin = Admin::where([
+            'email' => $request->email,
+            'password' => md5($request->password)
+        ])->first();
+        if ($admin) {
+            Auth::login($admin);
             return Redirect::to('/admin/dashboard');
         } else {
             Session::flash('error', 'Bạn nhập sai email hoặc mật khẩu');
