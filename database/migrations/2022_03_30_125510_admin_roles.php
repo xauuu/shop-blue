@@ -13,11 +13,11 @@ class AdminRoles extends Migration
      */
     public function up()
     {
-        Schema::create('admin_roles', function (Blueprint $table) {
-            $table->id('id_admin_roles');
-            $table->unsignedBigInteger('admin_admin_id');
-            $table->unsignedBigInteger('roles_id_roles');
-        });
+        // Schema::create('admin_roles', function (Blueprint $table) {
+        //     $table->id('id_admin_roles');
+        //     $table->unsignedBigInteger('admin_admin_id');
+        //     $table->unsignedBigInteger('roles_id_roles');
+        // });
     }
 
     /**
@@ -27,8 +27,8 @@ class AdminRoles extends Migration
      */
     public function down()
     {
-        Schema::table('admin_roles', function (Blueprint $table) {
-            //
-        });
+        // Schema::table('admin_roles', function (Blueprint $table) {
+        //     //
+        // });
     }
 }
