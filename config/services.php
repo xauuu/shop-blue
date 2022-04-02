@@ -30,14 +30,14 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
     'facebook' => [
-        'client_id' => '1269305420109881',
-        'client_secret' => 'd7de17b39b7b62c440a8585131e31f29',
-        'redirect' => 'https://shopblue.com/WEB_Laravel/public/login-customer/callback'
+        'client_id' => env('FACEBOOK_APP_ID'),
+        'client_secret' => env('FACEBOOK_APP_SECRET'),
+        'redirect' => env('FACEBOOK_REDIRECT')
     ],
     'google' => [
-        'client_id' => '480333666223-behtvqqle6di8408ug7c3o8p066i6q04.apps.googleusercontent.com',
-        'client_secret' => 'gzm2XaOnD4qj7bnzD1uHtbRU',
-        'redirect' => 'https://shopblue.com/WEB_Laravel/public/login-customer/google/callback'
+        'client_id' => env('GOOGLE_ID'),
+        'client_secret' => env('GOOGLE_SECRET'),
+        'redirect' => env('GOOGLE_URL')
     ],
 
 
