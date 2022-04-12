@@ -24,12 +24,12 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="product-pic-zoom">
-                        <img class="product-big-img" src="{{ asset('uploads/product/' . $detail->product_img) }}" alt="">
+                        <img class="product-big-img" src="{{ $detail->product_img }}" alt="">
                     </div>
                     <div class="product-thumbs" tabindex="1" style="overflow: hidden; outline: none;">
                         <div class="product-thumbs-track">
-                            <div class="pt active" data-imgbigurl="{{ asset('uploads/product/' . $detail->product_img) }}">
-                                <img src="{{ asset('uploads/product/' . $detail->product_img) }}" alt="">
+                            <div class="pt active" data-imgbigurl="{{ $detail->product_img }}">
+                                <img src="{{ $detail->product_img }}" alt="">
                             </div>
                             @foreach ($detail->gallery as $item)
                                 <div class="pt"

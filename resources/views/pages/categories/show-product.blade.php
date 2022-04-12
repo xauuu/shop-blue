@@ -35,7 +35,7 @@
                     <div class="product-item">
                         <div class="pi-pic">
                             <a href="{{ URL::to('product-detail/' . $pro->product_slug) }}">
-                                <img src="{{ asset('uploads/product/' . $pro->product_img) }}" alt="">
+                                <img src="{{ $pro->product_img }}" alt="{{ $pro->product_name }}">
                             </a>
                             <div class="pi-links">
                                 <button data-id="{{ $pro->product_id }}" type="button" name="add-cart" class="add-card">

@@ -13,15 +13,15 @@ class CreateCouponTable extends Migration
      */
     public function up()
     {
-        Schema::create('coupons', function (Blueprint $table) {
-            $table->increments('coupon_id');
-            $table->string('coupon_name');
-            $table->string('coupon_code');
-            $table->integer('coupon_times');
-            $table->integer('coupon_feature');
-            $table->integer('coupon_number');
-            $table->timestamps();
-        });
+        // Schema::create('coupons', function (Blueprint $table) {
+        //     $table->increments('coupon_id');
+        //     $table->string('coupon_name');
+        //     $table->string('coupon_code');
+        //     $table->integer('coupon_times');
+        //     $table->integer('coupon_feature');
+        //     $table->integer('coupon_number');
+        //     $table->timestamps();
+        // });
     }
 
     /**

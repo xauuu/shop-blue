@@ -11,6 +11,7 @@ use App\Models\Brand;
 use App\Models\Comment;
 use App\Models\Product;
 use Illuminate\Support\Facades\File;
+use Storage;
 
 class ProductController extends Controller
 {
@@ -24,10 +25,10 @@ class ProductController extends Controller
     public function all_product()
     {
         AuthLogin();
-        if(isset($_GET['entries'])){
+        if (isset($_GET['entries'])) {
             $paginate = $_GET['entries'];
             $product = Product::orderBy('product_order', 'asc')->paginate($paginate);
-        }else{
+        } else {
             $product = Product::orderBy('product_order', 'asc')->paginate(5);
         }
         return view('admin.product.all-product', compact('product'));
@@ -38,7 +39,7 @@ class ProductController extends Controller
         $product->category_id = $request->category_id;
         $product->brand_id = $request->brand_id;
         $product->product_name = $request->product_name;
-        $product->product_slug = $request->product_slug. '-' . date('mdYHis');;
+        $product->product_slug = $request->product_slug . '-' . date('mdYHis');;
         $product->product_tag = $request->product_tag;
         $product->product_desc = $request->product_desc;
         $product->product_quantity = $request->product_quantity;
@@ -51,8 +52,9 @@ class ProductController extends Controller
             $file = $request->product_img;
             $name = vn_to_str($request->product_name);
             $img_name = $name . '-' . date('mdYHis') . '.' . $file->getClientOriginalExtension();
-            $file->move('uploads/product', $img_name);
-            $product->product_img = $img_name;
+            // $file->move('uploads/product', $img_name);
+            $product->img_name = $img_name;
+            $product->product_img = $this->upload_to_drive($img_name, $file);
             $product->save();
         }
         Session::flash('success', 'Thêm sản phẩm thành công');
@@ -75,10 +77,7 @@ class ProductController extends Controller
     public function delete_product($product_id)
     {
         $product = Product::find($product_id);
-        $image_path = public_path("uploads/product/" . $product->product_img);
-        if (File::exists($image_path)) {
-            File::delete($image_path);
-        }
+        $this->delete_from_drive($product->img_name);
         $product->delete();
         Session::flash('success', 'Đã xoá sản phẩm ' . $product->product_name);
         return Redirect::to('admin/product/all-product');
@@ -99,7 +98,7 @@ class ProductController extends Controller
         $product->category_id = $request->category_id;
         $product->brand_id = $request->brand_id;
         $product->product_name = $request->product_name;
-        $product->product_slug = $request->product_slug. '-' . date('mdYHis');
+        $product->product_slug = $request->product_slug . '-' . date('mdYHis');
         $product->product_tag = $request->product_tag;
         $product->product_quantity = $request->product_quantity;
         $product->product_desc = $request->product_desc;
@@ -107,17 +106,12 @@ class ProductController extends Controller
         $product->product_discount = $request->product_discount;
         $product->product_detail = $request->product_detail;
         if ($request->hasFile('product_img')) {
+            $this->delete_from_drive($product->img_name);
             $file = $request->product_img;
             $name = vn_to_str($request->product_name);
             $img_name = $name . '-' . date('mdYHis') . '.' . $file->getClientOriginalExtension();
-            $file->move('uploads/product', $img_name);
-
-            $product->product_img = $img_name;
-
-            $image_path = public_path("uploads/product/" . $pro_img);
-            if (File::exists($image_path)) {
-                File::delete($image_path);
-            }
+            $product->product_img = $this->upload_to_drive($img_name, $file);
+            $product->img_name =  $img_name;
         }
         $product->save();
         Session::flash('success', 'Đã cập nhập sản phẩm ' . $product->product_name);
@@ -125,11 +119,11 @@ class ProductController extends Controller
     }
     public function search_product(Request $request)
     {
-        $product = Product::where('product_name', 'LIKE', '%'.$request->search.'%')->paginate(5);
-        if(!$product->isEmpty()){
+        $product = Product::where('product_name', 'LIKE', '%' . $request->search . '%')->paginate(5);
+        if (!$product->isEmpty()) {
             return view('admin.product.all-product', compact('product'));
-        }else{
-            return redirect()->back()->with('success', 'Không tìm thấy từ khoá '.$request->search);
+        } else {
+            return redirect()->back()->with('success', 'Không tìm thấy từ khoá ' . $request->search);
         }
     }
     public function comment($product_id)
@@ -149,10 +143,35 @@ class ProductController extends Controller
     {
         $product_id = $request->page_id_array;
 
-        foreach($product_id as $key => $value){
+        foreach ($product_id as $key => $value) {
             $product = Product::find($value);
             $product->product_order = $key;
             $product->save();
+        }
+    }
+
+    public function upload_to_drive($file_name, $file_data)
+    {
+        $contents = collect(Storage::cloud()->listContents('/', true));
+        $dir = $contents->where('type', '=', 'dir')
+            ->where('filename', '=', 'Product')
+            ->first();
+        $file_name = $dir['path'] . "/" . $file_name;
+        Storage::cloud()->put($file_name, file_get_contents($file_data));
+        $url = Storage::cloud()->url($file_name);
+        return $url;
+    }
+
+    private function delete_from_drive($filename)
+    {
+        $contents = collect(Storage::cloud()->listContents("/", true));
+        $file = $contents
+            ->where('type', '=', 'file')
+            ->where('filename', '=', pathinfo($filename, PATHINFO_FILENAME))
+            ->where('extension', '=', pathinfo($filename, PATHINFO_EXTENSION))
+            ->first();
+        if(isset($file)) {
+            Storage::cloud()->delete($file['path']);
         }
     }
 }
