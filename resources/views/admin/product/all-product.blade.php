@@ -72,7 +72,7 @@
                     @foreach ($product as $item => $value1)
                         <tr id="{{ $value1->product_id }}">
                             <td>{{ $value1->product_name }}</td>
-                            <td><img width="100" src="{{ URL::to('uploads/product/' . $value1->product_img) }}"
+                            <td><img width="100" src="{{ $value1->product_img }}"
                                     alt="{{ $value1->product_name }}"></td>
                             <td>
                                 <a class="btn btn-outline-success" title="Thêm thư viên ảnh cho sản phẩm"
